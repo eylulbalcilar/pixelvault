@@ -12,7 +12,7 @@ A modern NFT collection manager. Browse, manage, and track real NFTs from top co
 - Connect MetaMask wallet
 - Responsive, clean UI
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 **Frontend**
 - React + Vite
