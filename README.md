@@ -54,7 +54,7 @@ npm install
 npm run dev
 ```
 
-## 📁 Project Structure
+##  Project Structure
 ```
 nft_collection/
 ├── pixelvault/          # React frontend
