@@ -38,7 +38,6 @@ cd vault-api
 npm install
 # Create .env file with:
 # MONGO_URI=mongodb://localhost:27017/nftvault
-# ALCHEMY_URL=your_alchemy_url
 # PORT=5001
 npm run dev
 ```
