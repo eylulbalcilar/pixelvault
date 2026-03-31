@@ -32,7 +32,7 @@ const fetchAndSeedNFTs = async () => {
 
   for (const collection of collections) {
     const response = await fetch(
-      `${process.env.ALCHEMY_URL}/getNFTsForCollection?contractAddress=${collection.address}&withMetadata=true&limit=8`
+      `${process.env.ALCHEMY_URL}/nft/v3/getNFTsForCollection?contractAddress=${collection.address}&withMetadata=true&limit=8`
     )
     const data = await response.json()
 
