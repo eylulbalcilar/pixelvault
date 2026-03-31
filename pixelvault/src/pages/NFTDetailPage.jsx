@@ -14,7 +14,7 @@ const NFTDetailPage = () => {
   const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
-    fetch(`http://localhost:5001/api/nfts/${id}`)
+    fetch(`https://pixelvault-e9lh.onrender.com/api/nfts/${id}`)
       .then(res => res.json())
       .then(data => {
         if (data && data._id) setNft(data)
@@ -28,7 +28,7 @@ const NFTDetailPage = () => {
 
   const handleEdit = async (formData) => {
     await updateNFT(id, formData)
-    const updated = await fetch(`http://localhost:5001/api/nfts/${id}`).then(r => r.json())
+    const updated = await fetch(`https://pixelvault-e9lh.onrender.com/api/nfts/${id}`).then(r => r.json())
     setNft(updated)
     setShowForm(false)
   }
