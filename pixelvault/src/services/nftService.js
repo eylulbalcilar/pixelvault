@@ -1,4 +1,4 @@
-const BASE_URL = 'http://localhost:5001/api/nfts'
+const BASE_URL = 'https://pixelvault-e9lh.onrender.com/api/nfts'
 
 export const getAllNFTs = async () => {
   const response = await fetch(BASE_URL)
