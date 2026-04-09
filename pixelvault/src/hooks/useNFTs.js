@@ -1,42 +1,50 @@
-import { useState, useEffect } from 'react'
-import { getAllNFTs, createNFT, updateNFT, deleteNFT } from '../services/nftService'
+import { useState, useEffect } from "react";
+import {
+  getAllNFTs,
+  createNFT,
+  updateNFT,
+  deleteNFT,
+} from "../services/nftService";
 
 const useNFTs = () => {
-  const [nfts, setNfts] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [nfts, setNfts] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetchNFTs()
-  }, [])
+    fetchNFTs();
+  }, []);
 
   const fetchNFTs = async () => {
     try {
-      const data = await getAllNFTs()
-      setNfts(data)
+      const data = await getAllNFTs();
+      setNfts(data);
     } catch (err) {
-      setError(err.message)
+      setError(err.message);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
+  // REVIEW: addNFT, editNFT, and removeNFT have no try/catch. If any API call fails, the
+  // error is unhandled and the caller (HomePage) gets an unhandled promise rejection with
+  // no user feedback.
   const addNFT = async (nftData) => {
-    const newNFT = await createNFT(nftData)
-    setNfts([...nfts, newNFT])
-  }
+    const newNFT = await createNFT(nftData);
+    setNfts([...nfts, newNFT]);
+  };
 
   const editNFT = async (id, nftData) => {
-    const updated = await updateNFT(id, nftData)
-    setNfts(nfts.map(nft => nft._id === id ? updated : nft))
-  }
+    const updated = await updateNFT(id, nftData);
+    setNfts(nfts.map((nft) => (nft._id === id ? updated : nft)));
+  };
 
   const removeNFT = async (id) => {
-    await deleteNFT(id)
-    setNfts(nfts.filter(nft => nft._id !== id))
-  }
+    await deleteNFT(id);
+    setNfts(nfts.filter((nft) => nft._id !== id));
+  };
 
-  return { nfts, loading, error, addNFT, editNFT, removeNFT }
-}
+  return { nfts, loading, error, addNFT, editNFT, removeNFT };
+};
 
-export default useNFTs
+export default useNFTs;

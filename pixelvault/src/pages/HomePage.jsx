@@ -1,65 +1,70 @@
-import { useState, useEffect } from 'react'
-import Header from '../components/Header'
-import NFTList from '../components/NFTList'
-import NFTForm from '../components/NFTForm'
-import Notification from '../components/Notification'
-import Footer from '../components/Footer'
-import LiveTicker from '../components/LiveTicker'
-import useNFTs from '../hooks/useNFTs'
+import { useState, useEffect } from "react";
+import Header from "../components/Header";
+import NFTList from "../components/NFTList";
+import NFTForm from "../components/NFTForm";
+import Notification from "../components/Notification";
+import Footer from "../components/Footer";
+import LiveTicker from "../components/LiveTicker";
+import useNFTs from "../hooks/useNFTs";
 
 const HomePage = () => {
-  const { nfts, loading, error, addNFT, editNFT, removeNFT } = useNFTs()
-  const [editingNFT, setEditingNFT] = useState(null)
-  const [showForm, setShowForm] = useState(false)
-  const [search, setSearch] = useState('')
-  const [notification, setNotification] = useState({ message: '', type: '' })
+  const { nfts, loading, error, addNFT, editNFT, removeNFT } = useNFTs();
+  const [editingNFT, setEditingNFT] = useState(null);
+  const [showForm, setShowForm] = useState(false);
+  const [search, setSearch] = useState("");
+  const [notification, setNotification] = useState({ message: "", type: "" });
 
-  const filteredNFTs = nfts.filter(nft =>
-    nft.name.toLowerCase().includes(search.toLowerCase()) ||
-    nft.creator.toLowerCase().includes(search.toLowerCase()) ||
-    nft.category.toLowerCase().includes(search.toLowerCase())
-  )
+  const filteredNFTs = nfts.filter(
+    (nft) =>
+      nft.name.toLowerCase().includes(search.toLowerCase()) ||
+      nft.creator.toLowerCase().includes(search.toLowerCase()) ||
+      nft.category.toLowerCase().includes(search.toLowerCase()),
+  );
+  // REVIEW: Using window.location.search directly instead of React Router's useSearchParams
+  // hook. This bypasses React Router and won't react to programmatic navigation changes.
   useEffect(() => {
-  const params = new URLSearchParams(window.location.search)
-    if (params.get('addNFT') === 'true') {
-        setShowForm(true)
-        window.history.replaceState({}, '', '/')
+    const params = new URLSearchParams(window.location.search);
+    if (params.get("addNFT") === "true") {
+      setShowForm(true);
+      window.history.replaceState({}, "", "/");
     }
-    }, [])
+  }, []);
 
   const showNotification = (message, type) => {
-    setNotification({ message, type })
-  }
+    setNotification({ message, type });
+  };
 
+  // REVIEW: handleSubmit and handleDelete have no try/catch. If the API call rejects, there is
+  // no error notification shown to the user — the form just silently fails.
   const handleSubmit = async (formData) => {
     if (editingNFT) {
-      await editNFT(editingNFT._id, formData)
-      showNotification('NFT updated successfully!', 'success')
-      setEditingNFT(null)
+      await editNFT(editingNFT._id, formData);
+      showNotification("NFT updated successfully!", "success");
+      setEditingNFT(null);
     } else {
-      await addNFT(formData)
-      showNotification('NFT added successfully!', 'success')
+      await addNFT(formData);
+      showNotification("NFT added successfully!", "success");
     }
-    setShowForm(false)
-  }
+    setShowForm(false);
+  };
 
   const handleDelete = async (id) => {
-    await removeNFT(id)
-    showNotification('NFT deleted successfully!', 'error')
-  }
+    await removeNFT(id);
+    showNotification("NFT deleted successfully!", "error");
+  };
 
   const handleEdit = (nft) => {
-    setEditingNFT(nft)
-    setShowForm(true)
-  }
+    setEditingNFT(nft);
+    setShowForm(true);
+  };
 
   const handleCancel = () => {
-    setEditingNFT(null)
-    setShowForm(false)
-  }
+    setEditingNFT(null);
+    setShowForm(false);
+  };
 
-  if (loading) return <div className="loading">Loading your collection...</div>
-  if (error) return <div className="error">Error: {error}</div>
+  if (loading) return <div className="loading">Loading your collection...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
 
   return (
     <div className="app">
@@ -72,11 +77,11 @@ const HomePage = () => {
       <Notification
         message={notification.message}
         type={notification.type}
-        onClose={() => setNotification({ message: '', type: '' })}
+        onClose={() => setNotification({ message: "", type: "" })}
       />
       {showForm && (
         <div className="modal-overlay" onClick={handleCancel}>
-          <div className="modal" onClick={e => e.stopPropagation()}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
             <NFTForm
               onSubmit={handleSubmit}
               editingNFT={editingNFT}
@@ -94,7 +99,7 @@ const HomePage = () => {
       </main>
       <Footer />
     </div>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;
