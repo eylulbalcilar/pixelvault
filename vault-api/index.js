@@ -1,24 +1,30 @@
-import express from 'express'
-import mongoose from 'mongoose'
-import cors from 'cors'
-import dotenv from 'dotenv'
-import nftRoutes from './src/routes/nft.routes.js'
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
+import nftRoutes from "./src/routes/nft.routes.js";
 
-dotenv.config()
+dotenv.config();
 
-const app = express()
+const app = express();
 
-app.use(cors())
-app.use(express.json())
+// REVIEW: cors() with no options allows ALL origins. Should restrict to your frontend domain
+// e.g. app.use(cors({ origin: 'https://your-frontend.vercel.app' }))
+app.use(cors());
+app.use(express.json());
 
-app.use('/api/nfts', nftRoutes)
+app.use("/api/nfts", nftRoutes);
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('MongoDB connected ✅'))
-  .catch((err) => console.log('MongoDB error ❌', err))
+// REVIEW: The server starts listening even if MongoDB fails to connect. The .catch only logs
+// the error but doesn't prevent the app from running in a broken state. Consider awaiting the
+// connection or exiting the process on failure.
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("MongoDB connected ✅"))
+  .catch((err) => console.log("MongoDB error ❌", err));
 
-const PORT = process.env.PORT || 5000
+const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT} 🚀`)
-})
+  console.log(`Server running on port ${PORT} 🚀`);
+});

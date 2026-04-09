@@ -82,6 +82,9 @@
 }
 
 /* NFT GRID */
+/* REVIEW: No media queries anywhere in this stylesheet. The grid handles responsive columns,
+   but the header, detail page, and fixed-width elements (e.g. search input at 320px, detail
+   image at 500px) will break on mobile screens. Add responsive breakpoints. */
 .nft-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -187,7 +190,7 @@
 .modal-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -304,8 +307,14 @@
 }
 
 @keyframes slideIn {
-  from { transform: translateX(100px); opacity: 0; }
-  to { transform: translateX(0); opacity: 1; }
+  from {
+    transform: translateX(100px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }
 
 .loading {
@@ -488,8 +497,12 @@
 }
 
 @keyframes ticker {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .btn-wallet {
@@ -546,6 +559,7 @@
   transition: opacity 0.2s;
 }
 
-.btn-edit:hover, .btn-delete:hover {
+.btn-edit:hover,
+.btn-delete:hover {
   opacity: 0.8;
 }
