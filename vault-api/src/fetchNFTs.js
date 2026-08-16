@@ -30,10 +30,11 @@ const fetchAndSeedNFTs = async () => {
     console.log('MongoDB connected')
 
     let allNFTs = []
+    const nftApiBase = process.env.ALCHEMY_URL.replace('/v2/', '/nft/v3/')
 
     for (const collection of collections) {
       const response = await fetch(
-        `${process.env.ALCHEMY_URL}/nft/v3/getNFTsForCollection?contractAddress=${collection.address}&withMetadata=true&limit=12`
+        `${nftApiBase}/getNFTsForCollection?contractAddress=${collection.address}&withMetadata=true&limit=12`
       )
       const data = await response.json()
 
