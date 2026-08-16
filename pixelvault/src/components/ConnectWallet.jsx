@@ -1,14 +1,7 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 
 const ConnectWallet = () => {
   const [account, setAccount] = useState(null)
-
-  useEffect(() => {
-    if (!window.ethereum) return
-    window.ethereum.request({ method: 'eth_accounts' }).then((accounts) => {
-      if (accounts.length > 0) setAccount(accounts[0])
-    })
-  }, [])
 
   const connectWallet = async () => {
     if (!window.ethereum) {
