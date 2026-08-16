@@ -4,7 +4,7 @@ import Header from '../components/Header'
 import Footer from '../components/Footer'
 import LiveTicker from '../components/LiveTicker'
 import NFTForm from '../components/NFTForm'
-import { updateNFT, deleteNFT } from '../services/nftService'
+import { getNFTById, updateNFT, deleteNFT } from '../services/nftService'
 
 const NFTDetailPage = () => {
   const { id } = useParams()
@@ -14,8 +14,7 @@ const NFTDetailPage = () => {
   const [showForm, setShowForm] = useState(false)
 
   useEffect(() => {
-    fetch(`https://pixelvault-e9lh.onrender.com/api/nfts/${id}`)
-      .then(res => res.json())
+    getNFTById(id)
       .then(data => {
         if (data && data._id) setNft(data)
         setLoading(false)
@@ -27,15 +26,23 @@ const NFTDetailPage = () => {
   }, [id])
 
   const handleEdit = async (formData) => {
-    await updateNFT(id, formData)
-    const updated = await fetch(`https://pixelvault-e9lh.onrender.com/api/nfts/${id}`).then(r => r.json())
-    setNft(updated)
-    setShowForm(false)
+    try {
+      await updateNFT(id, formData)
+      const updated = await getNFTById(id)
+      setNft(updated)
+      setShowForm(false)
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   const handleDelete = async () => {
-    await deleteNFT(id)
-    navigate('/')
+    try {
+      await deleteNFT(id)
+      navigate('/')
+    } catch (err) {
+      console.error(err)
+    }
   }
 
   if (loading) return <div className="loading">Loading...</div>
@@ -43,7 +50,7 @@ const NFTDetailPage = () => {
 
   return (
     <div className="app">
-      <Header onAddClick={() => setShowForm(true)} search="" onSearch={() => {}} />
+      <Header onAddClick={() => setShowForm(true)} showSearch={false} />
       <LiveTicker />
       {showForm && (
         <div className="modal-overlay" onClick={() => setShowForm(false)}>
@@ -60,7 +67,7 @@ const NFTDetailPage = () => {
         <button className="back-btn" onClick={() => navigate('/')}>← Back</button>
         <div className="detail-content">
           <div className="detail-image">
-            <img src={nft.imageUrl} alt={nft.name} style={{width: '500px', height: '500px', objectFit: 'cover', borderRadius: '16px'}} />
+            <img src={nft.imageUrl} alt={nft.name} />
           </div>
           <div className="detail-info">
             <span className="detail-category">{nft.category}</span>

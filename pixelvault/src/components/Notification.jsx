@@ -6,13 +6,14 @@ const Notification = ({ message, type, onClose }) => {
       const timer = setTimeout(onClose, 3000)
       return () => clearTimeout(timer)
     }
-  }, [message])
+  }, [message, onClose])
 
   if (!message) return null
 
   return (
     <div className={`notification ${type}`}>
       {message}
+      <button className="notification-close" onClick={onClose}>×</button>
     </div>
   )
 }

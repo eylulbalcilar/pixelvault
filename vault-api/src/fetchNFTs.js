@@ -25,34 +25,44 @@ const collections = [
 ]
 
 const fetchAndSeedNFTs = async () => {
-  await mongoose.connect(process.env.MONGO_URI)
-  console.log('MongoDB connected')
+  try {
+    await mongoose.connect(process.env.MONGO_URI)
+    console.log('MongoDB connected')
 
-  let allNFTs = []
+    let allNFTs = []
 
-  for (const collection of collections) {
-    const response = await fetch(
-      `${process.env.ALCHEMY_URL}/nft/v3/getNFTsForCollection?contractAddress=${collection.address}&withMetadata=true&limit=8`
-    )
-    const data = await response.json()
+    for (const collection of collections) {
+      const response = await fetch(
+        `${process.env.ALCHEMY_URL}/nft/v3/getNFTsForCollection?contractAddress=${collection.address}&withMetadata=true&limit=8`
+      )
+      const data = await response.json()
 
-    const nfts = data.nfts.map(nft => ({
-      name: nft.title || `${collection.name} #${nft.id.tokenId}`,
-      creator: collection.name,
-      price: parseFloat((Math.random() * 50 + 1).toFixed(2)),
-      category: collection.category,
-      description: nft.description || `${collection.name} NFT`,
-      imageUrl: (nft.metadata?.image || nft.media[0]?.gateway || '').replace('ipfs://', 'https://ipfs.io/ipfs/'),
-    }))
+      const nfts = data.nfts.map(nft => ({
+        name: nft.title || `${collection.name} #${nft.id.tokenId}`,
+        creator: collection.name,
+        price: parseFloat((Math.random() * 50 + 1).toFixed(2)),
+        category: collection.category,
+        description: nft.description || `${collection.name} NFT`,
+        imageUrl: (nft.metadata?.image || nft.media?.[0]?.gateway || '').replace('ipfs://', 'https://ipfs.io/ipfs/'),
+      }))
 
-    allNFTs = [...allNFTs, ...nfts]
-    console.log(`${collection.name} fetched`)
+      allNFTs = [...allNFTs, ...nfts]
+      console.log(`${collection.name} fetched`)
+    }
+
+    if (allNFTs.length === 0) {
+      console.log('No NFTs fetched, aborting seed to avoid wiping the collection')
+      return
+    }
+
+    await NFT.deleteMany()
+    await NFT.insertMany(allNFTs)
+    console.log(`${allNFTs.length} NFTs seeded successfully `)
+  } catch (err) {
+    console.error('Seeding failed:', err)
+  } finally {
+    await mongoose.connection.close()
   }
-
-  await NFT.deleteMany()
-  await NFT.insertMany(allNFTs)
-  console.log(`${allNFTs.length} NFTs seeded successfully `)
-  mongoose.connection.close()
 }
 
 fetchAndSeedNFTs()

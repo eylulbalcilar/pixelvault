@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import Header from '../components/Header'
 import NFTList from '../components/NFTList'
 import NFTForm from '../components/NFTForm'
@@ -13,39 +14,48 @@ const HomePage = () => {
   const [showForm, setShowForm] = useState(false)
   const [search, setSearch] = useState('')
   const [notification, setNotification] = useState({ message: '', type: '' })
+  const [searchParams, setSearchParams] = useSearchParams()
 
   const filteredNFTs = nfts.filter(nft =>
     nft.name.toLowerCase().includes(search.toLowerCase()) ||
     nft.creator.toLowerCase().includes(search.toLowerCase()) ||
     nft.category.toLowerCase().includes(search.toLowerCase())
   )
+
   useEffect(() => {
-  const params = new URLSearchParams(window.location.search)
-    if (params.get('addNFT') === 'true') {
-        setShowForm(true)
-        window.history.replaceState({}, '', '/')
+    if (searchParams.get('addNFT') === 'true') {
+      setShowForm(true)
+      setSearchParams({})
     }
-    }, [])
+  }, [searchParams, setSearchParams])
 
   const showNotification = (message, type) => {
     setNotification({ message, type })
   }
 
   const handleSubmit = async (formData) => {
-    if (editingNFT) {
-      await editNFT(editingNFT._id, formData)
-      showNotification('NFT updated successfully!', 'success')
-      setEditingNFT(null)
-    } else {
-      await addNFT(formData)
-      showNotification('NFT added successfully!', 'success')
+    try {
+      if (editingNFT) {
+        await editNFT(editingNFT._id, formData)
+        showNotification('NFT updated successfully!', 'success')
+        setEditingNFT(null)
+      } else {
+        await addNFT(formData)
+        showNotification('NFT added successfully!', 'success')
+      }
+      setShowForm(false)
+    } catch (err) {
+      showNotification(err.message, 'error')
     }
-    setShowForm(false)
   }
 
   const handleDelete = async (id) => {
-    await removeNFT(id)
-    showNotification('NFT deleted successfully!', 'error')
+    try {
+      await removeNFT(id)
+      showNotification('NFT deleted successfully!', 'error')
+    } catch (err) {
+      showNotification(err.message, 'error')
+    }
   }
 
   const handleEdit = (nft) => {

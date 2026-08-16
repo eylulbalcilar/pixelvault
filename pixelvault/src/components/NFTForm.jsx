@@ -11,10 +11,12 @@ const initialState = {
 
 const NFTForm = ({ onSubmit, editingNFT, onCancel }) => {
   const [formData, setFormData] = useState(initialState)
+  const [formError, setFormError] = useState('')
 
   useEffect(() => {
     if (editingNFT) {
-      setFormData(editingNFT)
+      const { name, creator, price, category, description, imageUrl } = editingNFT
+      setFormData({ name, creator, price, category, description, imageUrl })
     } else {
       setFormData(initialState)
     }
@@ -27,9 +29,10 @@ const NFTForm = ({ onSubmit, editingNFT, onCancel }) => {
   const handleSubmit = (e) => {
     e.preventDefault()
     if (!formData.name || !formData.creator || !formData.price || !formData.description || !formData.imageUrl) {
-      alert('Please fill in all fields')
+      setFormError('Please fill in all fields')
       return
     }
+    setFormError('')
     onSubmit(formData)
     setFormData(initialState)
   }
@@ -37,6 +40,7 @@ const NFTForm = ({ onSubmit, editingNFT, onCancel }) => {
   return (
     <form className="nft-form" onSubmit={handleSubmit}>
       <h2>{editingNFT ? 'Edit NFT' : 'Add New NFT'}</h2>
+      {formError && <p className="form-error">{formError}</p>}
       <input name="name" placeholder="NFT Name" value={formData.name} onChange={handleChange} />
       <input name="creator" placeholder="Creator" value={formData.creator} onChange={handleChange} />
       <input name="price" type="number" placeholder="Price (ETH)" value={formData.price} onChange={handleChange} />

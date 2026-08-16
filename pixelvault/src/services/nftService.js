@@ -1,7 +1,15 @@
-const BASE_URL = 'https://pixelvault-e9lh.onrender.com/api/nfts'
+const API_URL = import.meta.env.VITE_API_URL || 'https://pixelvault-e9lh.onrender.com/api'
+const BASE_URL = `${API_URL}/nfts`
 
 export const getAllNFTs = async () => {
   const response = await fetch(BASE_URL)
+  if (!response.ok) throw new Error(`Request failed: ${response.status}`)
+  return response.json()
+}
+
+export const getNFTById = async (id) => {
+  const response = await fetch(`${BASE_URL}/${id}`)
+  if (!response.ok) throw new Error(`Request failed: ${response.status}`)
   return response.json()
 }
 
@@ -11,6 +19,7 @@ export const createNFT = async (nftData) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(nftData)
   })
+  if (!response.ok) throw new Error(`Request failed: ${response.status}`)
   return response.json()
 }
 
@@ -20,11 +29,13 @@ export const updateNFT = async (id, nftData) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(nftData)
   })
+  if (!response.ok) throw new Error(`Request failed: ${response.status}`)
   return response.json()
 }
 
 export const deleteNFT = async (id) => {
-  await fetch(`${BASE_URL}/${id}`, {
+  const response = await fetch(`${BASE_URL}/${id}`, {
     method: 'DELETE'
   })
+  if (!response.ok) throw new Error(`Request failed: ${response.status}`)
 }

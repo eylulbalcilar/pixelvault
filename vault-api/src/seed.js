@@ -32,3 +32,5 @@ const nfts = [
     imageUrl: "https://ipfs.io/ipfs/QmPMc4tcBsMqLRuCQtPmPe84bpSjrC3Ky7t3JWuHXYB4aS/1234.png"
   }
 ]
+
+export default nfts

@@ -22,18 +22,30 @@ const useNFTs = () => {
   }
 
   const addNFT = async (nftData) => {
-    const newNFT = await createNFT(nftData)
-    setNfts([...nfts, newNFT])
+    try {
+      const newNFT = await createNFT(nftData)
+      setNfts([...nfts, newNFT])
+    } catch (err) {
+      throw new Error('Failed to add NFT: ' + err.message)
+    }
   }
 
   const editNFT = async (id, nftData) => {
-    const updated = await updateNFT(id, nftData)
-    setNfts(nfts.map(nft => nft._id === id ? updated : nft))
+    try {
+      const updated = await updateNFT(id, nftData)
+      setNfts(nfts.map(nft => nft._id === id ? updated : nft))
+    } catch (err) {
+      throw new Error('Failed to update NFT: ' + err.message)
+    }
   }
 
   const removeNFT = async (id) => {
-    await deleteNFT(id)
-    setNfts(nfts.filter(nft => nft._id !== id))
+    try {
+      await deleteNFT(id)
+      setNfts(nfts.filter(nft => nft._id !== id))
+    } catch (err) {
+      throw new Error('Failed to delete NFT: ' + err.message)
+    }
   }
 
   return { nfts, loading, error, addNFT, editNFT, removeNFT }
