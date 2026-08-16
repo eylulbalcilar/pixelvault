@@ -33,18 +33,23 @@ const fetchAndSeedNFTs = async () => {
 
     for (const collection of collections) {
       const response = await fetch(
-        `${process.env.ALCHEMY_URL}/nft/v3/getNFTsForCollection?contractAddress=${collection.address}&withMetadata=true&limit=8`
+        `${process.env.ALCHEMY_URL}/nft/v3/getNFTsForCollection?contractAddress=${collection.address}&withMetadata=true&limit=12`
       )
       const data = await response.json()
 
-      const nfts = data.nfts.map(nft => ({
-        name: nft.title || `${collection.name} #${nft.id.tokenId}`,
-        creator: collection.name,
-        price: parseFloat((Math.random() * 50 + 1).toFixed(2)),
-        category: collection.category,
-        description: nft.description || `${collection.name} NFT`,
-        imageUrl: (nft.metadata?.image || nft.media?.[0]?.gateway || '').replace('ipfs://', 'https://ipfs.io/ipfs/'),
-      }))
+      const nfts = data.nfts.map(nft => {
+        const tokenId = nft.id.tokenId.startsWith('0x')
+          ? parseInt(nft.id.tokenId, 16)
+          : nft.id.tokenId
+        return {
+          name: nft.title || `${collection.name} #${tokenId}`,
+          creator: collection.name,
+          price: parseFloat((Math.random() * 50 + 1).toFixed(2)),
+          category: collection.category,
+          description: nft.description || `${collection.name} NFT`,
+          imageUrl: (nft.metadata?.image || nft.media?.[0]?.gateway || '').replace('ipfs://', 'https://ipfs.io/ipfs/'),
+        }
+      })
 
       allNFTs = [...allNFTs, ...nfts]
       console.log(`${collection.name} fetched`)
