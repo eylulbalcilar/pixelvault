@@ -44,7 +44,13 @@ const fetchAndSeedNFTs = async () => {
         price: parseFloat((Math.random() * 50 + 1).toFixed(2)),
         category: collection.category,
         description: nft.description || `${collection.name} NFT`,
-        imageUrl: (nft.image?.cachedUrl || nft.raw?.metadata?.image || '').replace('ipfs://', 'https://ipfs.io/ipfs/'),
+        imageUrl: (
+          nft.image?.cachedUrl ||
+          nft.image?.pngUrl ||
+          nft.image?.thumbnailUrl ||
+          nft.raw?.metadata?.image ||
+          ''
+        ).replace('ipfs://', 'https://cloudflare-ipfs.com/ipfs/'),
       }))
 
       allNFTs = [...allNFTs, ...nfts]

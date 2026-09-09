@@ -6,6 +6,10 @@ import LiveTicker from '../components/LiveTicker'
 import NFTForm from '../components/NFTForm'
 import { getNFTById, updateNFT, deleteNFT } from '../services/nftService'
 
+const FALLBACK_IMAGE = 'data:image/svg+xml,' + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400"><rect width="400" height="400" fill="#f1f0eb"/><text x="200" y="200" font-size="18" text-anchor="middle" fill="#999" font-family="sans-serif">Image unavailable</text></svg>'
+)
+
 const NFTDetailPage = () => {
   const { id } = useParams()
   const navigate = useNavigate()
@@ -67,7 +71,11 @@ const NFTDetailPage = () => {
         <button className="back-btn" onClick={() => navigate('/')}>← Back</button>
         <div className="detail-content">
           <div className="detail-image">
-            <img src={nft.imageUrl} alt={nft.name} />
+            <img
+              src={nft.imageUrl}
+              alt={nft.name}
+              onError={(e) => { e.target.onerror = null; e.target.src = FALLBACK_IMAGE }}
+            />
           </div>
           <div className="detail-info">
             <span className="detail-category">{nft.category}</span>
