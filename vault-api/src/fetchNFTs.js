@@ -50,7 +50,7 @@ const fetchAndSeedNFTs = async () => {
           nft.image?.thumbnailUrl ||
           nft.raw?.metadata?.image ||
           ''
-        ).replace('ipfs://', 'https://cloudflare-ipfs.com/ipfs/'),
+        ).replace('ipfs://', 'https://alchemy.mypinata.cloud/ipfs/'),
       }))
 
       allNFTs = [...allNFTs, ...nfts]
